@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: chemistry-center-hcmus
+    env: node
+    plan: free
+    buildCommand: "npm install && npm run build"
+    startCommand: "npx serve -s build"
+    envVars:
+      - key: NODE_VERSION
+        value: 18
