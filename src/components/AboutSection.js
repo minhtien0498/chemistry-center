@@ -19,9 +19,9 @@ export default function AboutSection({ aboutData }) {
   }, []);
   return (
     <div ref={sectionRef} className="section-animate">
-      <Divider orientation="left" id="about" className="divider-animate section-title-strong">Về Trung tâm</Divider>
+      <Divider orientation="left" id="about" >Về Trung tâm</Divider>
       <Card bordered={false} style={{ marginBottom: 32 }}>
-        <Title level={3} style={{ color: '#1677ff' }}>Giới thiệu</Title>
+        {/* <Title level={3} style={{ color: '#1677ff' }}>Giới thiệu</Title> */}
         <Paragraph>{aboutData.intro}</Paragraph>
         <Row gutter={32}>
           <Col xs={24} md={12}>
