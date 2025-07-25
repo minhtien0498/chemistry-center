@@ -8,11 +8,11 @@ const { Title, Paragraph } = Typography;
 function getIcon(title) {
   if (/năng lượng/i.test(title)) return <ExperimentOutlined style={{ fontSize: 48 }} />;
   if (/y học/i.test(title)) return <HeartOutlined style={{ fontSize: 48 }} />;
-  if (/môi trường/i.test(title)) return <EnvironmentOutlined style={{ fontSize: 48}} />;
+  if (/môi trường/i.test(title)) return <EnvironmentOutlined style={{ fontSize: 48  }} />;
   return <ExperimentOutlined style={{ fontSize: 48, color: '#1890ff' }} />;
 }
 
-export default function ResearchSection() {
+const ResearchSection = function ResearchSection() {
   const [research, setResearch] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
@@ -45,10 +45,8 @@ export default function ResearchSection() {
   const hasMore = research.length > 3;
 
   return (
-    <div className="section-animate" ref={sectionRef}>
-      <Divider orientation="left" id="research">
-        <span style={{ fontSize: 32, fontWeight: 700 }}>Nghiên cứu & Ứng dụng thực tiễn</span>
-      </Divider>
+    <section className="section-animate main-section" ref={sectionRef} id="research">
+      <Divider orientation="left" className="section-title" id="research">Nghiên cứu & Ứng dụng thực tiễn</Divider>
       <Row gutter={32} justify="center">
         {displayResearch.map((r, idx) => (
           <Col xs={24} sm={12} md={8} key={r.id || r.title || idx} style={{ marginBottom: 32 }}>
@@ -81,6 +79,8 @@ export default function ResearchSection() {
           </Button>
         </div>
       )}
-    </div>
+    </section>
   );
-} 
+}
+
+export default React.memo(ResearchSection); 

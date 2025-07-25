@@ -3,7 +3,7 @@ import { Card, Typography, Divider, Row, Col } from 'antd';
 
 const { Title, Paragraph } = Typography;
 
-export default function AboutSection({ aboutData }) {
+const AboutSection = function AboutSection({ aboutData }) {
   const sectionRef = useRef();
   useEffect(() => {
     const handleScroll = () => {
@@ -18,22 +18,23 @@ export default function AboutSection({ aboutData }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return (
-    <div ref={sectionRef} className="section-animate">
-      <Divider orientation="left" id="about" >Về Trung tâm</Divider>
-      <Card bordered={false} style={{ marginBottom: 32 }}>
-        {/* <Title level={3} style={{ color: '#1677ff' }}>Giới thiệu</Title> */}
+    <section ref={sectionRef} className="section-animate main-section" id="about">
+      <Divider orientation="left" className="section-title" id="about">Về Trung tâm</Divider>
+      <Card bordered={false}>
         <Paragraph>{aboutData.intro}</Paragraph>
         <Row gutter={32}>
           <Col xs={24} md={12}>
-            <Title level={5}>Sứ mệnh</Title>
+            <Title level={5} className="section-title">Sứ mệnh</Title>
             <Paragraph>{aboutData.mission}</Paragraph>
           </Col>
           <Col xs={24} md={12}>
-            <Title level={5}>Tầm nhìn</Title>
+            <Title level={5} className="section-title">Tầm nhìn</Title>
             <Paragraph>{aboutData.vision}</Paragraph>
           </Col>
         </Row>
       </Card>
-    </div>
+    </section>
   );
-} 
+};
+
+export default React.memo(AboutSection); 

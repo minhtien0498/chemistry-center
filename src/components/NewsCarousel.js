@@ -28,7 +28,7 @@ export default function NewsCarousel({ news }) {
             <div key={idx}>
               <Card bordered={false} style={{ maxWidth: 600, margin: '0 auto', minHeight: 320, textAlign: 'left', padding: 0, overflow: 'hidden', position: 'relative' }}>
                 <div style={{ position: 'relative', height: 180, overflow: 'hidden' }}>
-                  <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} />
+                  <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} loading="lazy" />
                   <Tag color={item.type === 'Hội thảo' ? 'purple' : item.type === 'Giải thưởng' ? 'gold' : item.type === 'Hợp tác' ? 'blue' : 'red'} style={{ position: 'absolute', top: 12, left: 12, fontSize: 16, padding: '4px 16px', zIndex: 2 }}>{item.type}</Tag>
                 </div>
                 <div style={{ padding: 20 }}>

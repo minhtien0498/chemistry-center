@@ -3,7 +3,7 @@ import { Row, Col, Typography, Button, Space } from 'antd';
 
 const { Title, Paragraph } = Typography;
 
-export default function Banner() {
+const Banner = function Banner() {
   const sectionRef = useRef();
   useEffect(() => {
     const handleScroll = () => {
@@ -20,15 +20,17 @@ export default function Banner() {
   return (
     <Row ref={sectionRef} gutter={32} align="middle" style={{ minHeight: 220 }} className="banner-section section-animate">
       <Col xs={24} md={14}>
-        <Title level={1} style={{ color: '#1677ff' }}>Trung tâm Hóa học HCMUS</Title>
+        <h1 className="section-title" style={{ color: '#1677ff' }}>Trung tâm Hóa học HCMUS</h1>
         <Paragraph style={{ fontSize: 18 }}>
           Đào tạo chuyên sâu - Nghiên cứu đột phá - Ứng dụng công nghệ
         </Paragraph>
         <Space>
-          <Button type="primary" size="large">Khám phá khóa học 🧑‍🏫</Button>
-          <Button size="large">Tham gia ngay 🔥</Button>
+          <Button type="primary" size="large" className="banner-btn">Khám phá khóa học 🧑‍🏫</Button>
+          <Button size="large" className="banner-btn">Tham gia ngay 🔥</Button>
         </Space>
       </Col>
     </Row>
   );
-} 
+};
+
+export default React.memo(Banner); 

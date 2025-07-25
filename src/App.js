@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import './App.css';
 import AppHeader from './components/Header';
 import Banner from './components/Banner';
@@ -55,19 +55,41 @@ export default function App() {
   return (
     <Layout>
       <AppHeader />
-      <Content style={{ padding: '0 32px', background: '#f5f7fa' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 0' }}>
-          <Banner />
-          <HighlightSection />
-          <AboutSection aboutData={aboutData} />
-          <TeamSection />
-          <ResearchSection />
-          <CoursesSection />
-          <PublicationsSection />
-          {/* <MaterialsSection /> */}
-          {/* <NewsCarousel /> */}
-          <ContactSection />
-        </div>
+      <Content style={{ background: '#f5f7fa' }}>
+        <main className="main-container">
+          <Suspense fallback={<div style={{textAlign:'center',marginTop:100}}><Spin size="large" tip="Đang tải thành phần..." /></div>}>
+            <section id="banner" className="main-section">
+              <Banner />
+            </section>
+            <section id="highlight" className="main-section">
+              <HighlightSection />
+            </section>
+            <section id="about" className="main-section">
+              <AboutSection aboutData={aboutData} />
+            </section>
+            <section id="team" className="main-section">
+              <TeamSection />
+            </section>
+            <section id="research" className="main-section">
+              <ResearchSection />
+            </section>
+            <section id="courses" className="main-section">
+              <CoursesSection />
+            </section>
+            <section id="publications" className="main-section">
+              <PublicationsSection />
+            </section>
+          </Suspense>
+          {/* <section id="materials" className="main-section">
+            <MaterialsSection />
+          </section> */}
+          {/* <section id="news" className="main-section">
+            <NewsCarousel />
+          </section> */}
+          <section id="contact" className="main-section">
+            <ContactSection />
+          </section>
+        </main>
       </Content>
       <AppFooter />
     </Layout>

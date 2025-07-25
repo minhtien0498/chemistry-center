@@ -4,7 +4,7 @@ import { fetchMaterials } from '../services/sheetApi';
 
 const { Title, Paragraph } = Typography;
 
-export default function MaterialsSection() {
+const MaterialsSection = function MaterialsSection() {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,4 +37,6 @@ export default function MaterialsSection() {
       </Row>
     </>
   );
-} 
+}
+
+export default React.memo(MaterialsSection); 

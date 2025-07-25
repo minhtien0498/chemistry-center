@@ -10,7 +10,7 @@ function getFirstSentence(text) {
   return match ? match[0] : text;
 }
 
-export default function TeamSection() {
+const TeamSection = function TeamSection() {
   const [teamData, setTeamData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState({});
@@ -36,15 +36,26 @@ export default function TeamSection() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (loading) return <Spin size="large" style={{ display: 'block', margin: '40px auto' }} />;
+  if (loading) return (
+    <section className="section-animate main-section" id="team">
+      <h2 className="section-title">Đội ngũ chuyên gia</h2>
+      <Row gutter={24} style={{ marginBottom: 32 }}>
+        {[1,2,3,4].map(i => (
+          <Col xs={24} sm={12} md={6} key={i} style={{ marginBottom: 16 }}>
+            <div className="skeleton-card" />
+          </Col>
+        ))}
+      </Row>
+    </section>
+  );
   if (!teamData || teamData.length === 0) {
     console.warn('Không có dữ liệu đội ngũ chuyên gia:', teamData);
     return <div style={{textAlign:'center',color:'#ff9800',margin:'32px 0'}}>Không có dữ liệu đội ngũ chuyên gia!</div>;
   }
 
   return (
-    <div className="section-animate" ref={sectionRef}>
-      <Divider orientation="left" id="team">Đội ngũ chuyên gia</Divider>
+    <section className="section-animate main-section" ref={sectionRef} id="team">
+      <Divider orientation="left" className="section-title" id="team">Đội ngũ chuyên gia</Divider>
       <Row gutter={24} style={{ marginBottom: 32 }}>
         {teamData.map((member, idx) => {
           const avatarUrl = member.avatar || member.image || undefined;
@@ -73,6 +84,7 @@ export default function TeamSection() {
                   src={avatarUrl}
                   size={96}
                   style={{ marginBottom: 18, border: '3px solid #1677ff', boxShadow: '0 2px 12px #e6f4ff', background: '#fff', color: '#1677ff', fontWeight: 700 }}
+                  {...(avatarUrl ? { loading: 'lazy' } : {})}
                 >
                   {!avatarUrl && name ? name[0] : null}
                 </Avatar>
@@ -95,6 +107,8 @@ export default function TeamSection() {
           );
         })}
       </Row>
-    </div>
+    </section>
   );
-} 
+};
+
+export default React.memo(TeamSection); 
