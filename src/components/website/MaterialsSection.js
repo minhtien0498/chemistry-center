@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Typography, Space, Avatar, Button, Divider, Spin } from 'antd';
-import { fetchMaterials } from '../services/sheetApi';
+import { fetchMaterials } from '../../services/sheetApi';
 
 const { Title, Paragraph } = Typography;
 

@@ -1,23 +1,28 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import './App.css';
-import AppHeader from './components/Header';
-import Banner from './components/Banner';
-import HighlightSection from './components/HighlightSection';
-import AboutSection from './components/AboutSection';
-import TeamSection from './components/TeamSection';
-import ResearchSection from './components/ResearchSection';
-import CoursesSection from './components/CoursesSection';
-import MaterialsSection from './components/MaterialsSection';
-import NewsCarousel from './components/NewsCarousel';
-import ContactSection from './components/ContactSection';
-import PublicationsSection from './components/PublicationsSection';
-import AppFooter from './components/Footer';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './styles/shared/App.css';
+import AppHeader from './components/website/Header';
+import Banner from './components/website/Banner';
+import HighlightSection from './components/website/HighlightSection';
+import AboutSection from './components/website/AboutSection';
+import TeamSection from './components/website/TeamSection';
+import ResearchSection from './components/website/ResearchSection';
+import CoursesSection from './components/website/CoursesSection';
+import MaterialsSection from './components/website/MaterialsSection';
+import NewsCarousel from './components/website/NewsCarousel';
+import ContactSection from './components/website/ContactSection';
+import PublicationsSection from './components/website/PublicationsSection';
+import AppFooter from './components/website/Footer';
+import Login from './components/admin/Login';
+import AdminDashboard from './components/admin/AdminDashboard';
 import { Layout, Spin } from 'antd';
-import { fetchSheetGviz } from './services/sheetApi';
+import { fetchSheetData } from './services/sheetApi';
+import { SHEET_NAMES } from './config';
 
 const { Content } = Layout;
 
-export default function App() {
+// Main website component
+const MainWebsite = () => {
   const [courses, setCourses] = useState([]);
   const [publications, setPublications] = useState([]);
   const [resources, setResources] = useState([]);
@@ -27,17 +32,27 @@ export default function App() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const [courses, publications, resources, research] = await Promise.all([
-        fetchSheetGviz('Courses'),
-        fetchSheetGviz('Publications'),
-        fetchSheetGviz('Resources'),
-        fetchSheetGviz('Research')
-      ]);
-      setCourses(courses);
-      setPublications(publications);
-      setResources(resources);
-      setResearch(research);
-      setLoading(false);
+      try {
+        const [courses, publications, resources, research] = await Promise.all([
+          fetchSheetData(SHEET_NAMES.courses),
+          fetchSheetData(SHEET_NAMES.publications),
+          fetchSheetData(SHEET_NAMES.resources),
+          fetchSheetData(SHEET_NAMES.research)
+        ]);
+        setCourses(courses);
+        setPublications(publications);
+        setResources(resources);
+        setResearch(research);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        // Set empty arrays if data loading fails
+        setCourses([]);
+        setPublications([]);
+        setResources([]);
+        setResearch([]);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
   }, []);
@@ -93,5 +108,54 @@ export default function App() {
       </Content>
       <AppFooter />
     </Layout>
+  );
+};
+
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+  return isLoggedIn ? children : <Navigate to="/login" replace />;
+};
+
+// Main App component with routing
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+    setIsLoggedIn(loggedIn);
+  }, []);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainWebsite />} />
+        <Route 
+          path="/login" 
+          element={
+            isLoggedIn ? 
+            <Navigate to="/admin" replace /> : 
+            <Login onLogin={handleLogin} />
+          } 
+        />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminDashboard onLogout={handleLogout} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 } 

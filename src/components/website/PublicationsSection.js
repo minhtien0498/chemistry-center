@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Divider, Spin, Row, Col, Button, Tag, Modal, Tooltip, Grid } from 'antd';
-import { fetchPublications } from '../services/sheetApi';
+import { fetchPublications } from '../../services/sheetApi';
 import { FilePdfOutlined, InfoCircleOutlined, FileTextOutlined, BookOutlined, UsergroupAddOutlined, SearchOutlined, ReadOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text } = Typography;

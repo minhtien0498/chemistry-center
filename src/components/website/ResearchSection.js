@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Card, Typography, Divider, Spin, Row, Col, Button, Avatar } from 'antd';
-import { fetchResearch } from '../services/sheetApi';
+import { fetchResearch } from '../../services/sheetApi';
 import { ExperimentOutlined, HeartOutlined, EnvironmentOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph } = Typography;
