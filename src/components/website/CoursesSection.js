@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Row, Col, Card, Typography, Button, Space, Tag, Divider, Spin } from 'antd';
 import { fetchCourses } from '../../services/sheetApi';
 
@@ -15,9 +16,10 @@ function renderStars(rating) {
   );
 }
 
-const CoursesSection = function CoursesSection() {
+const CoursesSection = function CoursesSection({ limit }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCourses().then(data => {
@@ -30,7 +32,7 @@ const CoursesSection = function CoursesSection() {
     <section className="main-section" id="courses">
       <h2 className="section-title">Khóa học</h2>
       <Row gutter={24}>
-        {[1,2,3].map(i => (
+        {[1, 2, 3].map(i => (
           <Col xs={24} md={8} key={i} style={{ marginBottom: 16 }}>
             <div className="skeleton-card" />
           </Col>
@@ -40,25 +42,42 @@ const CoursesSection = function CoursesSection() {
   );
   if (!courses || courses.length === 0) return null;
 
+  const displayedCourses = limit ? courses.slice(0, limit) : courses;
+
   return (
     <section className="main-section" id="courses">
-      <Divider orientation="left" className="section-title" id="courses">Khóa học</Divider>
-      <Row gutter={24} align="stretch">
-        {courses.map((c, idx) => (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <Divider orientation="left" className="section-title" id="courses" style={{ margin: 0 }}>Khóa học</Divider>
+        {limit && courses.length > limit && (
+          <Button type="link" onClick={() => {
+            window.scrollTo(0, 0);
+            navigate('/courses');
+          }}>
+            Xem tất cả &rarr;
+          </Button>
+        )}
+      </div>
+
+      <Row gutter={24} align="stretch" style={{ display: 'flex', flexWrap: 'wrap' }}>
+        {displayedCourses.map((c, idx) => (
           <Col xs={24} md={8} key={c.id || c.name || idx} style={{ marginBottom: 16, display: 'flex' }}>
             <Card
               title={<span style={{ color: '#1677ff' }}>{c.name}</span>}
               bordered={false}
               extra={<Button type="primary" href={c.registration} target="_blank">Đăng ký học</Button>}
-              style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
+              bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              hoverable
             >
-              <div style={{ flex: 1 }}>
-                <Paragraph>{c.shortdescription || c.description}</Paragraph>
-                <Space>
-                  <Tag color="blue">{c.duration}</Tag>
-                  <Tag color="green">{c.students} học viên</Tag>
-                  <Tag color="gold">{c.rating}/5 {renderStars(Number(c.rating))}</Tag>
-                </Space>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <Paragraph style={{ flex: 1 }}>{c.shortdescription || c.description}</Paragraph>
+                <div style={{ marginTop: 'auto' }}>
+                  <Space wrap>
+                    <Tag color="blue">{c.duration}</Tag>
+                    {c.students && <Tag color="green">{c.students} học viên</Tag>}
+                    {c.rating && <Tag color="gold">{c.rating}/5 {renderStars(Number(c.rating))}</Tag>}
+                  </Space>
+                </div>
               </div>
             </Card>
           </Col>

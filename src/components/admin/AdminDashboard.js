@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Table, Card, Space, message, Spin, Typography, Popconfirm } from 'antd';
-import { 
-  DatabaseOutlined, 
-  ReloadOutlined, 
+import { Layout, Menu, Button, Table, Card, Space, message, Spin, Typography, Popconfirm, ConfigProvider } from 'antd';
+import {
+  DatabaseOutlined,
+  ReloadOutlined,
   LogoutOutlined,
   BookOutlined,
   TeamOutlined,
@@ -13,10 +13,9 @@ import {
   EditOutlined,
   DeleteOutlined
 } from '@ant-design/icons';
-import { getAllSheetData, addRowToSheet, updateRowInSheet, deleteRowFromSheet } from '../../services/sheetApi';
+import { fetchTableData, addRowToSheet, updateRowInSheet, deleteRowFromSheet } from '../../services/sheetApi';
 import { SHEET_NAMES, TABLE_CONFIG } from '../../config';
 import DataForm from './DataForm';
-import ApiKeyWarning from './ApiKeyWarning';
 import '../../styles/admin/AdminDashboard.css';
 
 const { Header, Sider, Content } = Layout;
@@ -24,13 +23,15 @@ const { Title, Text } = Typography;
 
 const AdminDashboard = ({ onLogout }) => {
   const [selectedKey, setSelectedKey] = useState('courses');
-  const [data, setData] = useState({});
+  const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [formVisible, setFormVisible] = useState(false);
   const [editingData, setEditingData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [hasApiKey, setHasApiKey] = useState(false);
+
+  const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
     {
@@ -67,9 +68,9 @@ const AdminDashboard = ({ onLogout }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const sheetData = await getAllSheetData();
-      setData(sheetData);
-      message.success('Dữ liệu đã được cập nhật thành công!');
+      const currentSheet = getSheetDisplayName();
+      const data = await fetchTableData(currentSheet);
+      setTableData(data);
     } catch (error) {
       message.error('Lỗi khi tải dữ liệu: ' + error.message);
     } finally {
@@ -77,11 +78,16 @@ const AdminDashboard = ({ onLogout }) => {
     }
   };
 
+  useEffect(() => {
+    loadData();
+  }, [selectedKey]);
+
   const handleRefresh = async () => {
     setTableLoading(true);
     try {
-      const sheetData = await getAllSheetData();
-      setData(sheetData);
+      const currentSheet = getSheetDisplayName();
+      const data = await fetchTableData(currentSheet);
+      setTableData(data);
       message.success('Dữ liệu đã được làm mới!');
     } catch (error) {
       message.error('Lỗi khi làm mới dữ liệu: ' + error.message);
@@ -146,18 +152,11 @@ const AdminDashboard = ({ onLogout }) => {
     setIsEditMode(false);
   };
 
-  useEffect(() => {
-    loadData();
-    // Check if API key is available
-    setHasApiKey(!!process.env.REACT_APP_GOOGLE_SHEETS_API_KEY);
-  }, []);
-
   const getTableColumns = () => {
-    const sheetKey = getSheetDisplayName();
-    if (!data[sheetKey] || data[sheetKey].length === 0) {
+    if (!tableData || tableData.length === 0) {
       return [];
     }
-    const sample = data[sheetKey][0];
+    const sample = tableData[0];
     // Đặt width cho các cột data chính
     const baseColumns = Object.keys(sample).map(key => ({
       title: key.charAt(0).toUpperCase() + key.slice(1),
@@ -180,7 +179,7 @@ const AdminDashboard = ({ onLogout }) => {
             icon={<EditOutlined />}
             onClick={() => handleEdit(record, index)}
             size="small"
-            //disabled={!hasApiKey}
+          //disabled={!hasApiKey}
           >
             Sửa
           </Button>
@@ -195,7 +194,7 @@ const AdminDashboard = ({ onLogout }) => {
               danger
               icon={<DeleteOutlined />}
               size="small"
-              //disabled={!hasApiKey}
+            //disabled={!hasApiKey}
             >
               Xóa
             </Button>
@@ -207,7 +206,7 @@ const AdminDashboard = ({ onLogout }) => {
   };
 
   const getCurrentData = () => {
-    return data[getSheetDisplayName()] || [];
+    return tableData;
   };
 
   const getDataTitle = () => {
@@ -223,12 +222,20 @@ const AdminDashboard = ({ onLogout }) => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider width={250} className="admin-sider">
+      <Sider
+        width={250}
+        className="admin-sider"
+        theme="dark"
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
         <div className="admin-logo">
           <DatabaseOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
-          <span>Admin Dashboard</span>
+          {!collapsed && <span>Admin Dashboard</span>}
         </div>
         <Menu
+          theme="dark"
           mode="inline"
           selectedKeys={[selectedKey]}
           items={menuItems}
@@ -236,31 +243,30 @@ const AdminDashboard = ({ onLogout }) => {
           className="admin-menu"
         />
       </Sider>
-      
+
       <Layout>
         <Header className="admin-header">
           <div className="header-content">
-            <Title level={4} style={{ margin: 0, color: '#fff' }}>
+            <Title level={3} style={{ margin: 0 }}>
               {getDataTitle()}
             </Title>
             <Space>
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 icon={<PlusOutlined />}
                 onClick={handleAdd}
-                disabled={!hasApiKey}
               >
                 Thêm mới
               </Button>
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 icon={<ReloadOutlined />}
                 onClick={handleRefresh}
                 loading={tableLoading}
               >
                 Cập nhật dữ liệu
               </Button>
-              <Button 
+              <Button
                 icon={<LogoutOutlined />}
                 onClick={handleLogout}
                 danger
@@ -270,57 +276,61 @@ const AdminDashboard = ({ onLogout }) => {
             </Space>
           </div>
         </Header>
-        
+
         <Content className="admin-content">
-          {!hasApiKey && <ApiKeyWarning />}
           <Card>
-            {loading ? (
-              <div style={{ textAlign: 'center', padding: '50px' }}>
-                <Spin size="large" tip="Đang tải dữ liệu..." />
-              </div>
-            ) : (
+            <Spin spinning={loading} size="large" tip="Đang tải dữ liệu...">
               <div>
                 <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text strong>Tổng số bản ghi: {getCurrentData().length}</Text>
-                  <Button 
-                    type="primary" 
+                  <Button
+                    type="primary"
                     icon={<PlusOutlined />}
                     onClick={handleAdd}
-                    disabled={!hasApiKey}
                   >
                     Thêm mới
                   </Button>
                 </div>
                 {getCurrentData().length > 0 ? (
-                  <Table
-                    columns={getTableColumns()}
-                    dataSource={getCurrentData().map((item, index) => ({ ...item, key: index }))}
-                    pagination={{
-                      pageSize: TABLE_CONFIG.pageSize,
-                      showSizeChanger: true,
-                      showQuickJumper: true,
-                      showTotal: (total, range) => 
-                        `${range[0]}-${range[1]} của ${total} bản ghi`,
-                    }}
-                    scroll={{ x: TABLE_CONFIG.scrollX }}
-                    loading={tableLoading}
-                  />
+                  <ConfigProvider theme={{
+                    components: {
+                      Table: {
+                        rowHoverBg: '#ffffff',
+                        rowSelectedBg: '#ffffff',
+                        rowSelectedHoverBg: '#ffffff',
+                      },
+                    },
+                  }}>
+                    <Table
+                      columns={getTableColumns()}
+                      dataSource={getCurrentData().map((item, index) => ({ ...item, key: index }))}
+                      pagination={{
+                        pageSize: TABLE_CONFIG.pageSize,
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        showTotal: (total, range) =>
+                          `${range[0]}-${range[1]} của ${total} bản ghi`,
+                      }}
+                      scroll={{ x: TABLE_CONFIG.scrollX }}
+                      loading={tableLoading}
+                    />
+                  </ConfigProvider>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '50px', color: '#999' }}>
                     <DatabaseOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
                     <p>Không có dữ liệu</p>
-                    <Button 
-                      type="primary" 
+                    <Button
+                      type="primary"
                       icon={<PlusOutlined />}
                       onClick={handleAdd}
-                      disabled={!hasApiKey}
+                    // disabled={!hasApiKey}
                     >
                       Thêm dữ liệu đầu tiên
                     </Button>
                   </div>
                 )}
               </div>
-            )}
+            </Spin>
           </Card>
         </Content>
       </Layout>

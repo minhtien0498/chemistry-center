@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Divider, Spin, Row, Col, Button, Avatar } from 'antd';
 import { fetchResearch } from '../../services/sheetApi';
 import { ExperimentOutlined, HeartOutlined, EnvironmentOutlined } from '@ant-design/icons';
@@ -8,15 +9,15 @@ const { Title, Paragraph } = Typography;
 function getIcon(title) {
   if (/năng lượng/i.test(title)) return <ExperimentOutlined style={{ fontSize: 48 }} />;
   if (/y học/i.test(title)) return <HeartOutlined style={{ fontSize: 48 }} />;
-  if (/môi trường/i.test(title)) return <EnvironmentOutlined style={{ fontSize: 48  }} />;
+  if (/môi trường/i.test(title)) return <EnvironmentOutlined style={{ fontSize: 48 }} />;
   return <ExperimentOutlined style={{ fontSize: 48, color: '#1890ff' }} />;
 }
 
-const ResearchSection = function ResearchSection() {
+const ResearchSection = function ResearchSection({ limit }) {
   const [research, setResearch] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showAll, setShowAll] = useState(false);
   const sectionRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchResearch().then(data => {
@@ -41,12 +42,22 @@ const ResearchSection = function ResearchSection() {
   if (loading) return <Spin size="large" style={{ display: 'block', margin: '40px auto' }} />;
   if (!research || research.length === 0) return null;
 
-  const displayResearch = showAll ? research : research.slice(0, 3);
-  const hasMore = research.length > 3;
+  const displayResearch = limit ? research.slice(0, limit) : research;
 
   return (
     <section className="section-animate main-section" ref={sectionRef} id="research">
-      <Divider orientation="left" className="section-title" id="research">Nghiên cứu & Ứng dụng thực tiễn</Divider>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <Divider orientation="left" className="section-title" id="research" style={{ margin: 0 }}>Nghiên cứu & Ứng dụng thực tiễn</Divider>
+        {limit && research.length > limit && (
+          <Button type="link" onClick={() => {
+            window.scrollTo(0, 0);
+            navigate('/research');
+          }}>
+            Xem tất cả &rarr;
+          </Button>
+        )}
+      </div>
+
       <Row gutter={32} justify="center">
         {displayResearch.map((r, idx) => (
           <Col xs={24} sm={12} md={8} key={r.id || r.title || idx} style={{ marginBottom: 32 }}>
@@ -58,27 +69,24 @@ const ResearchSection = function ResearchSection() {
                 padding: '32px 12px 24px 12px',
                 minHeight: 340,
                 background: '#fff',
-                border: '1.5px solid #e6f4ff'
+                border: '1.5px solid #e6f4ff',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
               }}
+              bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
               hoverable
             >
               <div style={{ marginBottom: 18 }}>
                 <Avatar style={{ background: '#1890ff', margin: '0 auto', width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }} size={80} icon={getIcon(r.title)} />
               </div>
               <Title level={4} style={{ color: '#222', fontWeight: 700, marginBottom: 8 }}>{r.title}</Title>
-              <Paragraph style={{ color: '#444', minHeight: 48 }}>{r.description}</Paragraph>
+              <Paragraph style={{ color: '#444', marginBottom: 'auto' }}>{r.description}</Paragraph>
               <Button type="link" style={{ marginTop: 12, fontWeight: 500 }}>Tìm hiểu thêm</Button>
             </Card>
           </Col>
         ))}
       </Row>
-      {hasMore && (
-        <div style={{ textAlign: 'center', marginTop: 8 }}>
-          <Button type="primary" onClick={() => setShowAll(v => !v)}>
-            {showAll ? 'Thu gọn' : 'Xem thêm'}
-          </Button>
-        </div>
-      )}
     </section>
   );
 }

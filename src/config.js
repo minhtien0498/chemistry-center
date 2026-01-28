@@ -2,10 +2,8 @@
 
 // Validate required environment variables
 const requiredEnvVars = {
-  REACT_APP_SHEET_API_URL: process.env.REACT_APP_SHEET_API_URL,
-  REACT_APP_SHEET_ID: process.env.REACT_APP_SHEET_ID,
-  REACT_APP_ADMIN_EMAIL: process.env.REACT_APP_ADMIN_EMAIL,
-  REACT_APP_ADMIN_PASSWORD: process.env.REACT_APP_ADMIN_PASSWORD,
+  REACT_APP_SUPABASE_URL: process.env.REACT_APP_SUPABASE_URL,
+  REACT_APP_SUPABASE_ANON_KEY: process.env.REACT_APP_SUPABASE_ANON_KEY,
 };
 
 // Check for missing environment variables
@@ -22,13 +20,17 @@ if (missingVars.length > 0) {
 // Google Apps Script API Endpoint
 export const SHEET_API_URL = process.env.REACT_APP_SHEET_API_URL;
 
-// Google Sheets ID (for gviz fallback)
+// Google Sheets ID (for gviz fallback) - Keeping for reference or legacy support if needed
 export const SHEET_ID = process.env.REACT_APP_SHEET_ID;
+
+// Supabase Configuration
+export const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+export const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 // Standard sheet names mapping
 export const SHEET_NAMES = {
   courses: "Courses",
-  publications: "Publications", 
+  publications: "Publications",
   resources: "Resources",
   research: "Research",
   researchteam: "ResearchTeam"

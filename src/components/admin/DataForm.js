@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, message, Space } from 'antd';
 import { getSheetHeaders } from '../../services/sheetApi';
 
-const DataForm = ({ 
-  visible, 
-  onCancel, 
-  onSubmit, 
-  initialData = null, 
-  sheetName, 
-  isEdit = false 
+const DataForm = ({
+  visible,
+  onCancel,
+  onSubmit,
+  initialData = null,
+  sheetName,
+  isEdit = false
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ const DataForm = ({
       onCancel={onCancel}
       footer={null}
       width={600}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}
@@ -81,15 +81,15 @@ const DataForm = ({
         autoComplete="off"
       >
         {renderFormFields()}
-        
+
         <Form.Item>
           <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
             <Button onClick={onCancel}>
               Hủy
             </Button>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
+            <Button
+              type="primary"
+              htmlType="submit"
               loading={loading}
             >
               {isEdit ? 'Cập nhật' : 'Thêm mới'}
