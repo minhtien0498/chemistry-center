@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Card, Typography, Divider, Spin, Row, Col, Button, Avatar } from 'antd';
 import { fetchResearch } from '../../services/sheetApi';
 import { ExperimentOutlined, HeartOutlined, EnvironmentOutlined } from '@ant-design/icons';
@@ -17,7 +19,7 @@ const ResearchSection = function ResearchSection({ limit }) {
   const [research, setResearch] = useState([]);
   const [loading, setLoading] = useState(true);
   const sectionRef = useRef();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     fetchResearch().then(data => {
@@ -47,11 +49,11 @@ const ResearchSection = function ResearchSection({ limit }) {
   return (
     <section className="section-animate main-section" ref={sectionRef} id="research">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Divider orientation="left" className="section-title" id="research" style={{ margin: 0 }}>Nghiên cứu & Ứng dụng thực tiễn</Divider>
+        <Divider className="section-title" id="research" style={{ margin: 0 }}>Nghiên cứu & Ứng dụng thực tiễn</Divider>
         {limit && research.length > limit && (
           <Button type="link" onClick={() => {
             window.scrollTo(0, 0);
-            navigate('/research');
+            router.push('/research');
           }}>
             Xem tất cả &rarr;
           </Button>
@@ -74,7 +76,7 @@ const ResearchSection = function ResearchSection({ limit }) {
                 display: 'flex',
                 flexDirection: 'column'
               }}
-              bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column' } }}
               hoverable
             >
               <div style={{ marginBottom: 18 }}>

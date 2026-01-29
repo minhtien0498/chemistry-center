@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -9,22 +11,22 @@ const Login = ({ onLogin }) => {
 
   const onFinish = (values) => {
     setLoading(true);
-    
+
     // Simple authentication - check against configuration
     const adminEmail = ADMIN_CONFIG.email;
     const adminPassword = ADMIN_CONFIG.password;
-    
+
     if (values.email === adminEmail && values.password === adminPassword) {
       // Store login state in localStorage
       localStorage.setItem('adminLoggedIn', 'true');
       localStorage.setItem('adminEmail', values.email);
-      
+
       message.success('Đăng nhập thành công!');
       onLogin();
     } else {
       message.error('Email hoặc mật khẩu không đúng!');
     }
-    
+
     setLoading(false);
   };
 
@@ -45,9 +47,9 @@ const Login = ({ onLogin }) => {
               { type: 'email', message: 'Email không hợp lệ!' }
             ]}
           >
-            <Input 
-              prefix={<UserOutlined />} 
-              placeholder="admin@chemistry-center.com" 
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="admin@chemistry-center.com"
               size="large"
             />
           </Form.Item>
@@ -57,17 +59,17 @@ const Login = ({ onLogin }) => {
             label="Mật khẩu"
             rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
           >
-            <Input.Password 
-              prefix={<LockOutlined />} 
-              placeholder="admin123" 
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="admin123"
               size="large"
             />
           </Form.Item>
 
           <Form.Item>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
+            <Button
+              type="primary"
+              htmlType="submit"
               loading={loading}
               size="large"
               block
@@ -76,7 +78,7 @@ const Login = ({ onLogin }) => {
             </Button>
           </Form.Item>
         </Form>
-        
+
         <div className="login-info">
           <p><strong>Thông tin đăng nhập:</strong></p>
           <p>Email: {ADMIN_CONFIG.email}</p>

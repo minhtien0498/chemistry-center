@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Row, Col, Card, Typography, Avatar, Divider, Spin, Button } from 'antd';
 import { fetchTeam } from '../../services/sheetApi';
 
@@ -16,7 +18,7 @@ const TeamSection = function TeamSection({ limit }) {
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState({});
   const sectionRef = useRef();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     fetchTeam().then(data => {
@@ -64,7 +66,7 @@ const TeamSection = function TeamSection({ limit }) {
         {limit && teamData.length > limit && (
           <Button type="link" onClick={() => {
             window.scrollTo(0, 0);
-            navigate('/team');
+            router.push('/team');
           }}>
             Xem tất cả &rarr;
           </Button>

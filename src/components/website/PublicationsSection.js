@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Divider, Spin, Row, Col, Button, Tag, Modal, Tooltip, Grid } from 'antd';
 import { fetchPublications } from '../../services/sheetApi';
@@ -45,7 +47,7 @@ const PublicationsSection = function PublicationsSection() {
     <section className="main-section" id="publications">
       <h2 className="section-title">Our Publications</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
-        {[1,2].map(i => (
+        {[1, 2].map(i => (
           <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 32 }}>
             <div style={{ minWidth: 80, textAlign: 'center', height: '100%' }}>
               <div className="skeleton-card" style={{ height: 48, minHeight: 48 }} />
@@ -58,7 +60,7 @@ const PublicationsSection = function PublicationsSection() {
       </div>
     </section>
   );
-  if (!publications || publications.length === 0) return <div style={{textAlign:'center',color:'#ff9800',margin:'32px 0'}}>Không có ấn phẩm khoa học!</div>;
+  if (!publications || publications.length === 0) return <div style={{ textAlign: 'center', color: '#ff9800', margin: '32px 0' }}>Không có ấn phẩm khoa học!</div>;
 
   // Group by year
   const pubsByYear = publications.reduce((acc, pub) => {
@@ -70,7 +72,7 @@ const PublicationsSection = function PublicationsSection() {
 
   return (
     <div style={{ margin: '32px 0' }}>
-      <Divider orientation="left" className="section-title" id="publications">Our Publications</Divider>
+      <Divider className="section-title" id="publications">Our Publications</Divider>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
         {Object.entries(pubsByYear).sort(([a], [b]) => b - a).map(([year, pubs]) => (
           <div key={year} style={{ display: 'flex', alignItems: 'flex-start', gap: 32 }}>
@@ -98,38 +100,38 @@ const PublicationsSection = function PublicationsSection() {
                     }}
                     hoverable
                   >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                        <span style={{ fontSize: 22 }}>{getTypeIcon(pub.type)}</span>
-                        <Text strong>{pub.type || 'Article'}</Text>
-                        {pub.citation && <Tag color="green">{pub.citation} citations</Tag>}
-                      </div>
-                      <Title level={5} style={{ marginBottom: 4 }}>
-                        {pub.url ? <a href={pub.url} target="_blank" rel="noopener noreferrer">{pub.title}</a> : pub.title}
-                      </Title>
-                      <Text type="secondary" style={{ fontSize: 15 }}>{pub.authors}</Text>
-                      <Paragraph style={{ margin: '8px 0 0 0', fontSize: 14 }}>{pub.journal}</Paragraph>
-                      {pub.doi && <Paragraph style={{ margin: 0, fontSize: 13, color: '#888' }}>DOI: {pub.doi}</Paragraph>}
-                      <div style={{ marginTop: 10, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                        {pub.pdffile && (
-                          <Tooltip title="Xem PDF">
-                            <Button
-                              type="primary"
-                              shape="circle"
-                              icon={<FilePdfOutlined />}
-                              onClick={() => {
-                                if (isInternalPdf(pub.pdffile)) {
-                                  setPdfModal({ open: true, src: `/pdfs/${pub.pdffile.replace(/^pdfs\//, '')}` });
-                                } else {
-                                  window.open(pub.pdffile, '_blank');
-                                }
-                              }}
-                            />
-                          </Tooltip>
-                        )}
-                        <Tooltip title="Chi tiết">
-                          <Button type="default" shape="circle" icon={<InfoCircleOutlined />} onClick={() => setModal({ open: true, pub })} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                      <span style={{ fontSize: 22 }}>{getTypeIcon(pub.type)}</span>
+                      <Text strong>{pub.type || 'Article'}</Text>
+                      {pub.citation && <Tag color="green">{pub.citation} citations</Tag>}
+                    </div>
+                    <Title level={5} style={{ marginBottom: 4 }}>
+                      {pub.url ? <a href={pub.url} target="_blank" rel="noopener noreferrer">{pub.title}</a> : pub.title}
+                    </Title>
+                    <Text type="secondary" style={{ fontSize: 15 }}>{pub.authors}</Text>
+                    <Paragraph style={{ margin: '8px 0 0 0', fontSize: 14 }}>{pub.journal}</Paragraph>
+                    {pub.doi && <Paragraph style={{ margin: 0, fontSize: 13, color: '#888' }}>DOI: {pub.doi}</Paragraph>}
+                    <div style={{ marginTop: 10, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      {pub.pdffile && (
+                        <Tooltip title="Xem PDF">
+                          <Button
+                            type="primary"
+                            shape="circle"
+                            icon={<FilePdfOutlined />}
+                            onClick={() => {
+                              if (isInternalPdf(pub.pdffile)) {
+                                setPdfModal({ open: true, src: `/pdfs/${pub.pdffile.replace(/^pdfs\//, '')}` });
+                              } else {
+                                window.open(pub.pdffile, '_blank');
+                              }
+                            }}
+                          />
                         </Tooltip>
-                      </div>
+                      )}
+                      <Tooltip title="Chi tiết">
+                        <Button type="default" shape="circle" icon={<InfoCircleOutlined />} onClick={() => setModal({ open: true, pub })} />
+                      </Tooltip>
+                    </div>
                   </Card>
                 </Col>
               ))}
@@ -144,7 +146,7 @@ const PublicationsSection = function PublicationsSection() {
         title={modal.pub?.title}
         width={isMobile ? '100vw' : 600}
         style={isMobile ? { top: 0, padding: 0, maxWidth: '100vw' } : {}}
-        bodyStyle={isMobile ? { padding: 12 } : {}}
+        styles={{ body: isMobile ? { padding: 12 } : {} }}
       >
         {modal.pub && (
           <div>
@@ -169,7 +171,7 @@ const PublicationsSection = function PublicationsSection() {
         width={isMobile ? '100%' : 900}
         style={isMobile ? { top: 0, left: 0, padding: 0, width: '100%', maxWidth: '100%' } : {}}
         title="Xem PDF"
-        bodyStyle={isMobile ? { padding: 0, height: 'auto', width: '100%', overflow: 'hidden' } : { padding: 0, height: 700 }}
+        styles={{ body: isMobile ? { padding: 0, height: 'auto', width: '100%', overflow: 'hidden' } : { padding: 0, height: 700 } }}
         centered={isMobile}
         closable={true}
         maskClosable={true}

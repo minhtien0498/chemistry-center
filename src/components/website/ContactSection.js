@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Row, Col, Card, Typography, Form, Input, Button, message, Divider } from 'antd';
 
@@ -11,10 +13,10 @@ export default function ContactSection() {
   };
   return (
     <>
-      <Divider orientation="left" id="contact">Liên hệ</Divider>
+      <Divider id="contact">Liên hệ</Divider>
       <Row gutter={32}>
         <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Card bordered={false} style={{ height: 360, maxWidth: 370, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0' }}>
+          <Card style={{ height: 360, maxWidth: 370, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0', border: 'none' }}>
             <Title level={4} style={{ marginBottom: 10 }}>Gửi liên hệ cho chúng tôi</Title>
             <Form
               form={form}

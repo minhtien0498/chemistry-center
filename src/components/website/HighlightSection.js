@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 import { Row, Col, Card, Typography, Divider } from 'antd';
 import { ExperimentOutlined, BookOutlined, StarFilled, TeamOutlined } from '@ant-design/icons';
@@ -20,31 +22,31 @@ const HighlightSection = function HighlightSection() {
   }, []);
   return (
     <section ref={sectionRef} className="section-animate main-section" id="highlight">
-      <Divider orientation="left" className="section-title" id="highlight">Điểm nổi bật</Divider>
+      <Divider className="section-title" id="highlight" style={{ justifyContent: 'flex-start' }}>Điểm nổi bật</Divider>
       <Row gutter={24} style={{ marginBottom: 32, textAlign: 'center' }}>
         <Col xs={12} md={6}>
-          <Card bordered={false} className="card-highlight">
+          <Card className="card-highlight" style={{ border: 'none' }}>
             <ExperimentOutlined className="icon-pulse" style={{ fontSize: 36, color: '#1677ff', marginBottom: 8 }} />
             <Title level={3} as="h3" className="section-title section-title-strong" style={{ margin: 0 }}>1500+</Title>
             <Text>Sinh viên</Text>
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card bordered={false} className="card-highlight">
+          <Card className="card-highlight" style={{ border: 'none' }}>
             <BookOutlined className="icon-pulse" style={{ fontSize: 36, color: '#ff9800', marginBottom: 8 }} />
             <Title level={3} className="section-title section-title-strong" style={{ color: '#ff9800', margin: 0 }}>120</Title>
             <Text>Công trình</Text>
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card bordered={false} className="card-highlight">
+          <Card className="card-highlight" style={{ border: 'none' }}>
             <StarFilled className="icon-pulse" style={{ fontSize: 36, color: '#ffd700', marginBottom: 8 }} />
             <Title level={3} className="section-title section-title-strong" style={{ color: '#ffd700', margin: 0 }}>15</Title>
             <Text>Giải thưởng</Text>
           </Card>
         </Col>
         <Col xs={12} md={6}>
-          <Card bordered={false} className="card-highlight">
+          <Card className="card-highlight" style={{ border: 'none' }}>
             <TeamOutlined className="icon-pulse" style={{ fontSize: 36, color: '#1677ff', marginBottom: 8 }} />
             <Title level={3} className="section-title section-title-strong" style={{ margin: 0 }}>20+</Title>
             <Text>Đối tác</Text>

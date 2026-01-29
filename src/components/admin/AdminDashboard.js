@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Button, Table, Card, Space, message, Spin, Typography, Popconfirm, ConfigProvider } from 'antd';
 import {

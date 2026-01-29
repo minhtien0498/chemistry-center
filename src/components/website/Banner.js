@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 import { Row, Col, Typography, Button, Space } from 'antd';
 

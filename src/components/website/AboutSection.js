@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 import { Card, Typography, Divider, Row, Col } from 'antd';
 
@@ -19,8 +21,8 @@ const AboutSection = function AboutSection({ aboutData }) {
   }, []);
   return (
     <section ref={sectionRef} className="section-animate main-section" id="about">
-      <Divider orientation="left" className="section-title" id="about">Về Trung tâm</Divider>
-      <Card bordered={false}>
+      <Divider className="section-title" id="about">Về Trung tâm</Divider>
+      <Card style={{ border: 'none' }}>
         <Paragraph>{aboutData.intro}</Paragraph>
         <Row gutter={32}>
           <Col xs={24} md={12}>

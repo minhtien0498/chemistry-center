@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Row, Col, Card, Typography, Button, Space, Tag, Divider, Spin } from 'antd';
 import { fetchCourses } from '../../services/sheetApi';
 
@@ -19,7 +21,7 @@ function renderStars(rating) {
 const CoursesSection = function CoursesSection({ limit }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     fetchCourses().then(data => {
@@ -51,7 +53,7 @@ const CoursesSection = function CoursesSection({ limit }) {
         {limit && courses.length > limit && (
           <Button type="link" onClick={() => {
             window.scrollTo(0, 0);
-            navigate('/courses');
+            router.push('/courses');
           }}>
             Xem tất cả &rarr;
           </Button>
