@@ -62,7 +62,7 @@ const TeamSection = function TeamSection({ limit }) {
   return (
     <section className="section-animate main-section" ref={sectionRef} id="team">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Divider orientation="left" className="section-title" id="team" style={{ margin: 0 }}>Đội ngũ chuyên gia</Divider>
+        <Divider titlePlacement="left" className="section-title" id="team" style={{ margin: 0 }}>Đội ngũ chuyên gia</Divider>
         {limit && teamData.length > limit && (
           <Button type="link" onClick={() => {
             window.scrollTo(0, 0);
@@ -85,7 +85,7 @@ const TeamSection = function TeamSection({ limit }) {
           return (
             <Col xs={24} sm={12} md={limit ? 8 : 6} key={member.id || name || idx}>
               <Card
-                bordered
+                variant="outlined"
                 hoverable
                 className="card-highlight"
                 style={{
@@ -98,7 +98,7 @@ const TeamSection = function TeamSection({ limit }) {
                   display: 'flex',
                   flexDirection: 'column'
                 }}
-                bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+                styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column' } }}
               >
                 <div style={{ marginBottom: 18 }}>
                   <Avatar

@@ -1,7 +1,7 @@
 import '../styles/shared/App.css';
 import StyledComponentsRegistry from '../lib/AntdRegistry';
-import AppHeader from '../components/website/Header';
-import AppFooter from '../components/website/Footer';
+
+import ClientLayout from '../components/layout/ClientLayout';
 
 export const metadata = {
     title: 'Chemistry Center HCMUS',
@@ -13,15 +13,9 @@ export default function RootLayout({ children }) {
         <html lang="vi">
             <body>
                 <StyledComponentsRegistry>
-                    <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                        <AppHeader />
-                        <div style={{ background: '#f5f7fa', flex: 1 }}>
-                            <main className="main-container">
-                                {children}
-                            </main>
-                        </div>
-                        <AppFooter />
-                    </div>
+                    <ClientLayout>
+                        {children}
+                    </ClientLayout>
                 </StyledComponentsRegistry>
             </body>
         </html>

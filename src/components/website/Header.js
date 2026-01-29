@@ -36,7 +36,7 @@ export default function AppHeader() {
   const pathname = usePathname();
 
   return (
-    <Header style={{ background: '#fff', boxShadow: '0 2px 8px #f0f1f2', zIndex: 10, position: 'relative', padding: isMobile ? '0 12px' : undefined }}>
+    <Header style={{ background: '#fff', boxShadow: '0 2px 8px #f0f1f2', zIndex: 1000, position: 'sticky', top: 0, width: '100%', padding: isMobile ? '0 12px' : undefined }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href="/">
           <Space>
