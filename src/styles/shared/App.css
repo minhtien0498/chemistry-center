@@ -1,15 +1,48 @@
-/* Biến màu và spacing */
+/* Biến màu và spacing - Design System Mới */
 :root {
+  /* Brand Colors */
   --primary: #1677ff;
+  /* Royal Blue - Trust & Science */
+  --primary-hover: #4096ff;
   --secondary: #ff9800;
-  --accent: #ffd700;
-  --text-main: #222;
-  --text-light: #444;
-  --bg-main: #f5f7fa;
-  --bg-section: #fff;
-  --spacing-section: 48px;
-  --spacing-section-mobile: 32px;
-  --radius-card: 16px;
+  /* Orange - Energetic Accent */
+  --secondary-hover: #ffad33;
+
+  /* Text Colors */
+  --text-main: #111827;
+  /* Almost Black - High Contrast */
+  --text-secondary: #4b5563;
+  /* Dark Gray - Readable Subtext */
+  --text-light: #6b7280;
+  /* Light Gray - Meta text */
+  --text-white: #ffffff;
+
+  /* Background Colors */
+  --bg-body: #f3f4f6;
+  /* Very Light Gray - Clean Background */
+  --bg-white: #ffffff;
+  --bg-section-gray: #f9fafb;
+  /* Alternating Section Color */
+  --bg-glass: rgba(255, 255, 255, 0.82);
+
+  /* Spacing System */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  --spacing-2xl: 80px;
+  /* For Section Padding */
+
+  /* UI Elements */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  /* Modern rounded corners */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 body {
@@ -232,62 +265,130 @@ a:hover {
   transform: translateY(0) scale(1);
 }
 
-/* Banner section gradient + shadow */
-.banner-section {
-  background: linear-gradient(rgba(22, 119, 255, 0.25), rgba(255, 255, 255, 0.7)),
-    url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-  border-radius: 18px;
-  margin-bottom: 32px;
-  box-shadow: 0 4px 24px 0 rgba(22, 119, 255, 0.08);
-  padding: 32px 0 !important;
+/* Full Width Breakout for Hero */
+.hero-wrapper {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: linear-gradient(135deg, #e0f2ff 0%, #ffffff 100%);
+  overflow: hidden;
+  padding: 0;
+  margin-bottom: 48px;
+}
+
+.hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--primary) 0%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* Fallback */
+  margin-bottom: 24px;
+  letter-spacing: -1px;
+}
+
+.section-gray {
+  background-color: var(--bg-section-gray);
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  padding: 64px 0;
+}
+
+.section-white {
+  background-color: var(--bg-white);
+  padding: 48px 0;
+}
+
+/* Ensure inner content is constrained */
+.section-gray>*,
+.section-white>* {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.hero-image-wrapper {
+  position: relative;
+  height: 400px;
+  background: url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+  border-radius: 24px;
+  box-shadow: var(--shadow-xl);
+  transform: perspective(1000px) rotateY(-5deg);
+  transition: transform 0.5s ease;
+}
+
+.hero-image-wrapper:hover {
+  transform: perspective(1000px) rotateY(0deg);
+}
+
+/* Glassmorphism decoration */
+.hero-decoration-circle {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(22, 119, 255, 0.2), rgba(255, 152, 0, 0.2));
+  filter: blur(80px);
+  border-radius: 50%;
+  z-index: 0;
 }
 
 @media (max-width: 768px) {
-  .banner-section {
-    background-position: center top;
-    min-height: 160px;
-    padding: 16px 0 !important;
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-container {
+    padding: 40px 16px;
+    text-align: center;
+  }
+
+  .hero-subtitle {
+    margin: 0 auto 32px auto;
+  }
+
+  .hero-image-wrapper {
+    margin-top: 40px;
+    height: 300px;
+    transform: none;
+  }
+
+  .hero-image-wrapper:hover {
+    transform: none;
   }
 }
 
-/* Hiệu ứng pulse cho icon minh họa */
-.icon-pulse {
-  animation: pulseIcon 1.5s infinite;
+/* Remove old Banner styles if conflicting or keep for reference */
+.banner-section {
+  display: none;
 }
 
-@keyframes pulseIcon {
-  0% {
-    box-shadow: 0 0 0 0 rgba(22, 119, 255, 0.3);
-  }
-
-  70% {
-    box-shadow: 0 0 0 12px rgba(22, 119, 255, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(22, 119, 255, 0);
-  }
-}
-
-/* Tối ưu màu sắc cho section nổi bật */
-.section-title-strong {
-  color: #1677ff;
-  text-shadow: 0 2px 8px #e6f4ff;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-/* Divider động khi vào view */
-.divider-animate {
-  opacity: 0;
-  transform: translateX(-40px);
-  transition: opacity 0.7s, transform 0.7s;
-}
-
-.divider-animate.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
 
 /* Footer hiện đại */
 .custom-footer {

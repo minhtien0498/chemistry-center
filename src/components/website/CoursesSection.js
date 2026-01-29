@@ -3,32 +3,29 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Row, Col, Card, Typography, Button, Space, Tag, Divider, Spin } from 'antd';
+import { StarFilled } from '@ant-design/icons';
 import { fetchCourses } from '../../services/sheetApi';
 
 const { Title, Paragraph } = Typography;
 
-function renderStars(rating) {
-  const full = Math.floor(rating);
-  const half = rating - full >= 0.5;
-  return (
-    <span>
-      {[...Array(full)].map((_, i) => <span key={i} style={{ color: '#faad14' }}>★</span>)}
-      {half && <span style={{ color: '#faad14' }}>☆</span>}
-    </span>
-  );
-}
 
-const CoursesSection = function CoursesSection({ limit }) {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+const CoursesSection = function CoursesSection({ limit, data = null }) {
+  const [courses, setCourses] = useState(data || []);
+  const [loading, setLoading] = useState(!data);
   const router = useRouter();
 
   useEffect(() => {
+    if (data) {
+      setCourses(data);
+      setLoading(false);
+      return;
+    }
     fetchCourses().then(data => {
       setCourses(data);
       setLoading(false);
     });
-  }, []);
+  }, [data]);
 
   if (loading) return (
     <section className="main-section" id="courses">
@@ -49,7 +46,7 @@ const CoursesSection = function CoursesSection({ limit }) {
   return (
     <section className="main-section" id="courses">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Divider orientation="left" className="section-title" id="courses" style={{ margin: 0 }}>Khóa học</Divider>
+        <Divider titlePlacement="left" className="section-title" id="courses" style={{ margin: 0 }}>Khóa học</Divider>
         {limit && courses.length > limit && (
           <Button type="link" onClick={() => {
             window.scrollTo(0, 0);
@@ -60,24 +57,25 @@ const CoursesSection = function CoursesSection({ limit }) {
         )}
       </div>
 
-      <Row gutter={24} align="stretch" style={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Row gutter={[24, 24]} align="stretch" style={{ display: 'flex', flexWrap: 'wrap' }}>
         {displayedCourses.map((c, idx) => (
           <Col xs={24} md={8} key={c.id || c.name || idx} style={{ marginBottom: 16, display: 'flex' }}>
             <Card
-              title={<span style={{ color: '#1677ff' }}>{c.name}</span>}
-              bordered={false}
-              extra={<Button type="primary" href={c.registration} target="_blank">Đăng ký học</Button>}
-              style={{ flex: 1, display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
-              bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              title={<span style={{ color: '#1677ff', fontWeight: 600 }}>{c.name}</span>}
+              variant="outlined"
+              className="card-highlight"
+              extra={<Button type="primary" size="small" href={c.registration} target="_blank">Đăng ký</Button>}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column' } }}
               hoverable
             >
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <Paragraph style={{ flex: 1 }}>{c.shortdescription || c.description}</Paragraph>
+                <Paragraph ellipsis={{ rows: 3 }} style={{ flex: 1, marginBottom: 16 }}>{c.shortdescription || c.description}</Paragraph>
                 <div style={{ marginTop: 'auto' }}>
-                  <Space wrap>
+                  <Space wrap size={[8, 8]}>
                     <Tag color="blue">{c.duration}</Tag>
                     {c.students && <Tag color="green">{c.students} học viên</Tag>}
-                    {c.rating && <Tag color="gold">{c.rating}/5 {renderStars(Number(c.rating))}</Tag>}
+                    {c.rating && <Tag color="gold" icon={<StarFilled />}>{c.rating}/5</Tag>}
                   </Space>
                 </div>
               </div>

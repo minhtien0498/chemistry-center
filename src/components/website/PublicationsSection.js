@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, Typography, Divider, Spin, Row, Col, Button, Tag, Modal, Tooltip, Grid } from 'antd';
 import { fetchPublications } from '../../services/sheetApi';
 import { FilePdfOutlined, InfoCircleOutlined, FileTextOutlined, BookOutlined, UsergroupAddOutlined, SearchOutlined, ReadOutlined } from '@ant-design/icons';
@@ -25,15 +26,21 @@ function isInternalPdf(link) {
   return link && !/^https?:\/\//i.test(link);
 }
 
-const PublicationsSection = function PublicationsSection() {
-  const [publications, setPublications] = useState([]);
-  const [loading, setLoading] = useState(true);
+const PublicationsSection = function PublicationsSection({ data = null }) {
+  const [publications, setPublications] = useState(data || []);
+  const [loading, setLoading] = useState(!data);
   const [modal, setModal] = useState({ open: false, pub: null });
   const [pdfModal, setPdfModal] = useState({ open: false, src: null });
+  const router = useRouter();
   const screens = useBreakpoint();
   const isMobile = !screens.md;
 
   useEffect(() => {
+    if (data) {
+      setPublications(data);
+      setLoading(false);
+      return;
+    }
     fetchPublications().then(data => {
       const pubs = (data || [])
         .filter(pub => pub.isshow !== false && pub.isshow !== 'FALSE')
@@ -41,7 +48,7 @@ const PublicationsSection = function PublicationsSection() {
       setPublications(pubs);
       setLoading(false);
     });
-  }, []);
+  }, [data]);
 
   if (loading) return (
     <section className="main-section" id="publications">
@@ -70,53 +77,69 @@ const PublicationsSection = function PublicationsSection() {
     return acc;
   }, {});
 
+
   return (
-    <div style={{ margin: '32px 0' }}>
-      <Divider className="section-title" id="publications">Our Publications</Divider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
+    <section className="main-section" id="publications">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <Divider titlePlacement="left" className="section-title" id="publications" style={{ margin: 0 }}>Công bố khoa học & Ấn phẩm</Divider>
+        <Button type="link" onClick={() => router.push('/publications')}>
+          Xem tất cả &rarr;
+        </Button>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 48 }}>
         {Object.entries(pubsByYear).sort(([a], [b]) => b - a).map(([year, pubs]) => (
-          <div key={year} style={{ display: 'flex', alignItems: 'flex-start', gap: 32 }}>
-            {/* Cột trái: Năm */}
-            <div style={{ minWidth: 80, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-              <Title level={3} style={{ color: '#1677ff', margin: 0 }}>{year}</Title>
+          <div key={year} style={{ display: 'flex', alignItems: 'flex-start', gap: 32 }} className="year-group">
+            {/* Cột trái: Năm - Responsive handle via CSS if needed, currently fixed */}
+            <div style={{ minWidth: 80, textAlign: 'center' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, #1677ff 0%, #4096ff 100%)',
+                color: '#fff',
+                borderRadius: 12,
+                padding: '12px 0',
+                boxShadow: '0 4px 12px rgba(22, 119, 255, 0.3)',
+                fontWeight: 700,
+                fontSize: 20
+              }}>
+                {year}
+              </div>
             </div>
+
             {/* Cột phải: Các publication card */}
             <Row gutter={[24, 24]} align="stretch" style={{ flex: 1 }}>
               {pubs.map((pub, idx) => (
-                <Col xs={24} sm={12} md={8} key={pub.id || pub.title || idx} style={{ display: 'flex' }}>
+                <Col xs={24} md={12} lg={8} key={pub.id || pub.title || idx} style={{ display: 'flex' }}>
                   <Card
+                    className="card-highlight"
+                    variant="outlined"
                     style={{
-                      borderRadius: 16,
-                      boxShadow: '0 4px 24px 0 rgba(22,119,255,0.08)',
-                      textAlign: 'left',
-                      minHeight: 220,
-                      height: '100%',
+                      width: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      background: '#fff',
-                      border: '1.5px solid #e6f4ff',
-                      padding: 18,
-                      flex: 1
                     }}
+                    styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column', padding: 20 } }}
                     hoverable
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                      <span style={{ fontSize: 22 }}>{getTypeIcon(pub.type)}</span>
-                      <Text strong>{pub.type || 'Article'}</Text>
-                      {pub.citation && <Tag color="green">{pub.citation} citations</Tag>}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                      <span style={{ fontSize: 22, color: '#1677ff' }}>{getTypeIcon(pub.type)}</span>
+                      <Tag color="geekblue">{pub.type || 'Article'}</Tag>
+                      {pub.citation && <Tag color="green">{pub.citation} quotes</Tag>}
                     </div>
-                    <Title level={5} style={{ marginBottom: 4 }}>
-                      {pub.url ? <a href={pub.url} target="_blank" rel="noopener noreferrer">{pub.title}</a> : pub.title}
+                    <Title level={5} style={{ marginBottom: 8, fontSize: 16, lineHeight: 1.4 }}>
+                      {pub.url ? <a href={pub.url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>{pub.title}</a> : pub.title}
                     </Title>
-                    <Text type="secondary" style={{ fontSize: 15 }}>{pub.authors}</Text>
-                    <Paragraph style={{ margin: '8px 0 0 0', fontSize: 14 }}>{pub.journal}</Paragraph>
-                    {pub.doi && <Paragraph style={{ margin: 0, fontSize: 13, color: '#888' }}>DOI: {pub.doi}</Paragraph>}
-                    <div style={{ marginTop: 10, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <Text type="secondary" style={{ fontSize: 14, display: 'block', marginBottom: 8 }}>{pub.authors}</Text>
+                    <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 13, color: '#888', fontStyle: 'italic' }}>{pub.journal}</span>
+                    </div>
+
+                    <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
                       {pub.pdffile && (
                         <Tooltip title="Xem PDF">
                           <Button
+                            size="small"
                             type="primary"
-                            shape="circle"
+                            ghost
                             icon={<FilePdfOutlined />}
                             onClick={() => {
                               if (isInternalPdf(pub.pdffile)) {
@@ -125,12 +148,10 @@ const PublicationsSection = function PublicationsSection() {
                                 window.open(pub.pdffile, '_blank');
                               }
                             }}
-                          />
+                          >PDF</Button>
                         </Tooltip>
                       )}
-                      <Tooltip title="Chi tiết">
-                        <Button type="default" shape="circle" icon={<InfoCircleOutlined />} onClick={() => setModal({ open: true, pub })} />
-                      </Tooltip>
+                      <Button size="small" icon={<InfoCircleOutlined />} onClick={() => setModal({ open: true, pub })}>Chi tiết</Button>
                     </div>
                   </Card>
                 </Col>
@@ -187,7 +208,7 @@ const PublicationsSection = function PublicationsSection() {
           />
         )}
       </Modal>
-    </div>
+    </section>
   );
 };
 

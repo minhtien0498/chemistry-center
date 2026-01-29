@@ -15,18 +15,23 @@ function getIcon(title) {
   return <ExperimentOutlined style={{ fontSize: 48, color: '#1890ff' }} />;
 }
 
-const ResearchSection = function ResearchSection({ limit }) {
-  const [research, setResearch] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ResearchSection = function ResearchSection({ limit, data = null }) {
+  const [research, setResearch] = useState(data || []);
+  const [loading, setLoading] = useState(!data);
   const sectionRef = useRef();
   const router = useRouter();
 
   useEffect(() => {
+    if (data) {
+      setResearch(data);
+      setLoading(false);
+      return;
+    }
     fetchResearch().then(data => {
       setResearch(data);
       setLoading(false);
     });
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +54,7 @@ const ResearchSection = function ResearchSection({ limit }) {
   return (
     <section className="section-animate main-section" ref={sectionRef} id="research">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Divider className="section-title" id="research" style={{ margin: 0 }}>Nghiên cứu & Ứng dụng thực tiễn</Divider>
+        <Divider titlePlacement="left" className="section-title" id="research" style={{ margin: 0 }}>Nghiên cứu & Ứng dụng thực tiễn</Divider>
         {limit && research.length > limit && (
           <Button type="link" onClick={() => {
             window.scrollTo(0, 0);
@@ -60,31 +65,32 @@ const ResearchSection = function ResearchSection({ limit }) {
         )}
       </div>
 
-      <Row gutter={32} justify="center">
+      <Row gutter={[32, 32]} justify="center">
         {displayResearch.map((r, idx) => (
           <Col xs={24} sm={12} md={8} key={r.id || r.title || idx} style={{ marginBottom: 32 }}>
             <Card
+              className="card-highlight"
               style={{
-                borderRadius: 16,
-                boxShadow: '0 4px 24px 0 rgba(22,119,255,0.08)',
-                textAlign: 'center',
-                padding: '32px 12px 24px 12px',
-                minHeight: 340,
-                background: '#fff',
-                border: '1.5px solid #e6f4ff',
                 height: '100%',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                textAlign: 'center',
+                paddingTop: 16
               }}
+              variant="outlined"
               styles={{ body: { flex: 1, display: 'flex', flexDirection: 'column' } }}
               hoverable
             >
               <div style={{ marginBottom: 18 }}>
-                <Avatar style={{ background: '#1890ff', margin: '0 auto', width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }} size={80} icon={getIcon(r.title)} />
+                <Avatar
+                  style={{ background: '#e6f4ff', margin: '0 auto', width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  size={80}
+                  icon={React.cloneElement(getIcon(r.title), { style: { fontSize: 40, color: '#1677ff' } })}
+                />
               </div>
-              <Title level={4} style={{ color: '#222', fontWeight: 700, marginBottom: 8 }}>{r.title}</Title>
-              <Paragraph style={{ color: '#444', marginBottom: 'auto' }}>{r.description}</Paragraph>
-              <Button type="link" style={{ marginTop: 12, fontWeight: 500 }}>Tìm hiểu thêm</Button>
+              <Title level={4} style={{ color: '#111827', fontWeight: 700, marginBottom: 8 }}>{r.title}</Title>
+              <Paragraph style={{ color: '#4b5563', marginBottom: 'auto' }}>{r.description}</Paragraph>
+              <Button type="link" style={{ marginTop: 12, fontWeight: 500 }}>Tìm hiểu thêm &rarr;</Button>
             </Card>
           </Col>
         ))}

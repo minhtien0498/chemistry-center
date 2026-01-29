@@ -19,16 +19,27 @@ function getTableName(sheetName) {
  * Fetch data from Supabase.
  * Returns array of objects.
  */
-export async function fetchTableData(tableName) {
+export async function fetchTableData(tableName, limit = null) {
   const table = getTableName(tableName);
 
-  const { data, error } = await supabase
+  let query = supabase
     .from(table)
     .select('*')
     .order('created_at', { ascending: false });
 
+  if (limit) {
+    query = query.limit(limit);
+  }
+
+  const { data, error } = await query;
+
   if (error) {
-    console.error(`Error fetching data from ${table}:`, error);
+    console.error(`[Supabase Error] Fetching ${table} failed:`, error.message);
+    return [];
+  }
+
+  if (!data) {
+    console.warn(`[Supabase Warning] No data returned for ${table}`);
     return [];
   }
 
@@ -36,11 +47,11 @@ export async function fetchTableData(tableName) {
 }
 
 // Aliases for compatibility/clarity
-export function fetchCourses() { return fetchTableData(SHEET_NAMES.courses); }
-export function fetchTeam() { return fetchTableData(SHEET_NAMES.researchteam); }
-export function fetchResearch() { return fetchTableData(SHEET_NAMES.research); }
-export function fetchMaterials() { return fetchTableData(SHEET_NAMES.resources); }
-export function fetchPublications() { return fetchTableData(SHEET_NAMES.publications); }
+export function fetchCourses(limit) { return fetchTableData(SHEET_NAMES.courses, limit); }
+export function fetchTeam(limit) { return fetchTableData(SHEET_NAMES.researchteam, limit); }
+export function fetchResearch(limit) { return fetchTableData(SHEET_NAMES.research, limit); }
+export function fetchMaterials(limit) { return fetchTableData(SHEET_NAMES.resources, limit); }
+export function fetchPublications(limit) { return fetchTableData(SHEET_NAMES.publications, limit); }
 
 // CRUD Operations
 

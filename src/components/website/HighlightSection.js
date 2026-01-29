@@ -22,7 +22,7 @@ const HighlightSection = function HighlightSection() {
   }, []);
   return (
     <section ref={sectionRef} className="section-animate main-section" id="highlight">
-      <Divider className="section-title" id="highlight" style={{ justifyContent: 'flex-start' }}>Điểm nổi bật</Divider>
+      <Divider titlePlacement="left" className="section-title" id="highlight" style={{ margin: 0, marginBottom: 32 }}>Điểm nổi bật</Divider>
       <Row gutter={24} style={{ marginBottom: 32, textAlign: 'center' }}>
         <Col xs={12} md={6}>
           <Card className="card-highlight" style={{ border: 'none' }}>

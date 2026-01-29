@@ -13,19 +13,24 @@ function getFirstSentence(text) {
   return match ? match[0] : text;
 }
 
-const TeamSection = function TeamSection({ limit }) {
-  const [teamData, setTeamData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const TeamSection = function TeamSection({ limit, data = null }) {
+  const [teamData, setTeamData] = useState(data || []);
+  const [loading, setLoading] = useState(!data);
   const [expanded, setExpanded] = useState({});
   const sectionRef = useRef();
   const router = useRouter();
 
   useEffect(() => {
+    if (data) {
+      setTeamData(data);
+      setLoading(false);
+      return;
+    }
     fetchTeam().then(data => {
       setTeamData(data);
       setLoading(false);
     });
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     const handleScroll = () => {
